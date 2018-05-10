@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Donar Amor - APAE Torres</string>
+    <string name="cat">Categorías</string>
+    <string name="verParceiros">Ver socios</string>
+    <string name="lojas">Tiendas</string>
+    <string name="pesquisarCat">"Buscar categorías "</string>
+</resources>
