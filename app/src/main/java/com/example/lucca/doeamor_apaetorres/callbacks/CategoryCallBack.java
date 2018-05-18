@@ -1,4 +1,6 @@
-package com.example.lucca.doeamor_apaetorres.Models.Categories;
+package com.example.lucca.doeamor_apaetorres.callbacks;
+
+import com.example.lucca.doeamor_apaetorres.models.Category;
 
 import java.util.ArrayList;
 

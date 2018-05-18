@@ -11,9 +11,10 @@
         android:id="@+id/partnerPhoto"
         android:layout_width="match_parent"
         android:layout_height="90dp"
+        android:adjustViewBounds="true"
         android:background="@drawable/border"
-        android:scaleType="centerCrop"
-       />
+        android:cropToPadding="true"
+        android:scaleType="centerCrop" />
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -1,4 +1,6 @@
-package com.example.lucca.doeamor_apaetorres.Models.Partners;
+package com.example.lucca.doeamor_apaetorres.callbacks;
+
+import com.example.lucca.doeamor_apaetorres.models.Partner;
 
 import java.util.ArrayList;
 

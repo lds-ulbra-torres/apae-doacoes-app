@@ -1,4 +1,4 @@
-package com.example.lucca.doeamor_apaetorres.Adapters;
+package com.example.lucca.doeamor_apaetorres.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,9 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.lucca.doeamor_apaetorres.Models.Categories.Category;
 import com.example.lucca.doeamor_apaetorres.R;
+import com.example.lucca.doeamor_apaetorres.models.Category;
 
 import java.util.ArrayList;
 
@@ -61,7 +60,7 @@ public class CategoryAdapter extends ArrayAdapter <Category> {
         Glide
                 .with(getContext())
                 .load("http://apaetorres.org.br/doacoes" + category.getPhotoCat())
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .error(R.drawable.ic_image_off)
                 .into(imgBackground);
     }
 }

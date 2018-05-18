@@ -1,4 +1,4 @@
-package com.example.lucca.doeamor_apaetorres.View;
+package com.example.lucca.doeamor_apaetorres.views;
 
 import android.content.Context;
 import android.util.AttributeSet;

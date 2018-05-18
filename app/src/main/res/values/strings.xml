@@ -7,5 +7,6 @@
     <string name="action_search">Pesquisar</string>
     <string name="action_status">Status</string>
     <string name="action_settings">Sobre</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>

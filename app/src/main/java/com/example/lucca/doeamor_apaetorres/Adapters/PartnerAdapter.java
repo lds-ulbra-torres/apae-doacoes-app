@@ -1,4 +1,4 @@
-package com.example.lucca.doeamor_apaetorres.Adapters;
+package com.example.lucca.doeamor_apaetorres.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,15 +11,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.lucca.doeamor_apaetorres.Models.Partners.Partner;
 import com.example.lucca.doeamor_apaetorres.R;
+import com.example.lucca.doeamor_apaetorres.models.Partner;
 
 import java.util.ArrayList;
 
 public class PartnerAdapter extends ArrayAdapter<Partner> {
-    private TextView tvTituloPartner;
-    private TextView tvDiscountPartner;
     private ImageView imgBackground;
 
 
@@ -48,13 +45,13 @@ public class PartnerAdapter extends ArrayAdapter<Partner> {
 
         Partner partner = getItem(position);
 
-        tvTituloPartner = gridView.findViewById(R.id.partnerTittle);
+        TextView tvTituloPartner = gridView.findViewById(R.id.partnerTittle);
         imgBackground = gridView.findViewById(R.id.partnerPhoto);
-        tvDiscountPartner = gridView.findViewById(R.id.partnerDiscount);
-        tvDiscountPartner.setText(String.valueOf(partner.getDiscountPartner())+"%");
-        tvTituloPartner.setText(partner.getFantasyNamePartner());
+        TextView tvDiscountPartner = gridView.findViewById(R.id.partnerDiscount);
+        tvDiscountPartner.setText("-"+String.valueOf(partner.getDiscount_partner())+"%");
+        tvTituloPartner.setText(partner.getFantasy_name_partner());
         loadPhotoPartner(partner);
-        imgBackground.setBackgroundResource(R.drawable.border);
+
         return gridView;
 
     }
@@ -62,8 +59,7 @@ public class PartnerAdapter extends ArrayAdapter<Partner> {
     private void loadPhotoPartner(Partner partner) {
         Glide
                 .with(getContext())
-                .load("http://apaetorres.org.br/doacoes" + partner.getPhotoPartner())
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .load("http://apaetorres.org.br/doacoes" + partner.getPhoto_partner())
                 .into(imgBackground);
     }
 }

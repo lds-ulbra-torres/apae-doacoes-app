@@ -1,4 +1,4 @@
-package com.example.lucca.doeamor_apaetorres.Database;
+package com.example.lucca.doeamor_apaetorres.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -6,8 +6,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
     private static String DATABASE_NAME = "APAE_DB";
-    private static int DATABASE_VERSION = 18;
+    private static int DATABASE_VERSION = 39;
 
+    public DataBaseHelper(Context context){
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
 
     private static String TABLE_PARTNERS = "CREATE TABLE PARTNERS" +
             "(_id_partner INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -25,17 +28,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             "id_city INTEGER," +
             "photo_partner TEXT," +
             "category_id_category INTEGER," +
-            "CONSTRAINT id_cat FOREIGN KEY (category_id_category) REFERENCES TABLE_CATEGORIES (_id_category));";
+            "CONSTRAINT id_cat FOREIGN KEY (category_id_category) REFERENCES CATEGORIES (_id_category));";
 
     private static String TABLE_CATEGORIES = "CREATE TABLE CATEGORIES" +
             "(_id_category INTEGER PRIMARY KEY AUTOINCREMENT,"+
             "name_category TEXT," +
             "description_category TEXT," +
             "photo_category TEXT)";
-
-    public DataBaseHelper(Context context){
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {

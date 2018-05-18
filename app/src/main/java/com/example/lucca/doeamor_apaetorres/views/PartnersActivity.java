@@ -1,4 +1,4 @@
-package com.example.lucca.doeamor_apaetorres.View;
+package com.example.lucca.doeamor_apaetorres.views;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,14 +21,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.lucca.doeamor_apaetorres.Adapters.PartnerAdapter;
-import com.example.lucca.doeamor_apaetorres.Controllers.PartnerController;
-import com.example.lucca.doeamor_apaetorres.Models.Partners.Partner;
-import com.example.lucca.doeamor_apaetorres.Models.Partners.PartnerCallback;
 import com.example.lucca.doeamor_apaetorres.R;
+import com.example.lucca.doeamor_apaetorres.adapters.PartnerAdapter;
+import com.example.lucca.doeamor_apaetorres.callbacks.PartnerCallback;
+import com.example.lucca.doeamor_apaetorres.controllers.PartnerController;
+import com.example.lucca.doeamor_apaetorres.dao.PartnerDao;
+import com.example.lucca.doeamor_apaetorres.dto.PartnerDTO;
+import com.example.lucca.doeamor_apaetorres.models.Partner;
+import com.example.lucca.doeamor_apaetorres.retrofit.RetrofitInit;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PartnersActivity extends AppCompatActivity {
     android.support.v7.widget.Toolbar toolbar, searchtollbar;
@@ -37,22 +45,19 @@ public class PartnersActivity extends AppCompatActivity {
     private PartnerAdapter adapter;
     private ArrayList<Partner> searchablePartnerList= new ArrayList<>();
     private PartnerController partnerController;
-
+    private PartnerDao partnerDao;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_partners);
         Intent intent = getIntent();
         String idCat = intent.getStringExtra("id");
-
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getActionBar();
         setSearchtollbar();
         lvPartners =  findViewById(R.id.lvPartners);
         lvPartners.setExpanded(true);
-        lvPartners.setAdapter(adapter);
-        partnerController = new PartnerController(PartnersActivity.this, idCat);
-
 
         lvPartners.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -60,16 +65,18 @@ public class PartnersActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(PartnersActivity.this, DetailPartner.class);
                 Partner partner = (Partner) lvPartners.getAdapter().getItem(position);
-                intent.putExtra("name", partner.getFantasyNamePartner());
-                intent.putExtra("partnerPhoto", partner.getPhotoPartner());
-                intent.putExtra("partnerPhone", partner.getCommerciaPhonePartner());
-                intent.putExtra("partnerStreet",partner.getStreetPartner());
-                intent.putExtra("partnerNumber", partner.getNumberPartner());
-                intent.putExtra("partnerState",partner.getCepPartner());
+                intent.putExtra("name", partner.getFantasy_name_partner());
+                intent.putExtra("partnerPhoto", partner.getPhoto_partner());
+                intent.putExtra("partnerPhone", partner.getCommercial_phone_partner());
+                intent.putExtra("partnerStreet",partner.getStreet_partner());
+                intent.putExtra("partnerNumber", partner.getNumber_partner());
+                intent.putExtra("partnerState",partner.getCep_partner());
                 startActivity(intent);
             }
         });
-        loadListPartners();
+
+        retrofitInit(idCat);
+
     }
 
     @Override
@@ -93,6 +100,28 @@ public class PartnersActivity extends AppCompatActivity {
         });
     }
 
+    public void retrofitInit(final String idCat){
+        Call <PartnerDTO> call= new RetrofitInit().getPartnerService().getPartners(idCat);
+
+        call.enqueue(new Callback<PartnerDTO>() {
+            @Override
+            public void onResponse(@NonNull Call<PartnerDTO> call, @NonNull Response<PartnerDTO> response) {
+                PartnerDTO dto = response.body();
+                partnerDao = new PartnerDao(getApplicationContext());
+                searchablePartnerList = dto.getPartners();
+                partnerDao.insert(searchablePartnerList);
+                adapter = new PartnerAdapter(PartnersActivity.this, partnerDao.getPartnersDataBase());
+                lvPartners.setAdapter(adapter);
+                partnerDao.clearPartnersFromDatabase();
+                Log.e("onResponse ",  "deu certo" );
+
+            }
+            @Override
+            public void onFailure(Call<PartnerDTO> call, Throwable t) {
+                Log.e("onFailure: ",t.getMessage() );
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
@@ -212,7 +241,7 @@ public class PartnersActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
                 ArrayList<Partner> searchable = new ArrayList<>();
                 for (Partner p: searchablePartnerList) {
-                    if(p.getFantasyNamePartner().toLowerCase().contains(query.toLowerCase())){
+                    if(p.getFantasy_name_partner().toLowerCase().contains(query.toLowerCase())){
                         searchable.add(p);
                     }
                 }
@@ -228,7 +257,7 @@ public class PartnersActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 ArrayList<Partner> searchable = new ArrayList<>();
                 for (Partner p: searchablePartnerList) {
-                    if(p.getFantasyNamePartner().toLowerCase().contains(newText.toLowerCase())){
+                    if(p.getFantasy_name_partner().toLowerCase().contains(newText.toLowerCase())){
                         searchable.add(p);
                     }
                 }

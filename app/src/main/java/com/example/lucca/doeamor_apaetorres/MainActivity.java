@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,15 +21,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.lucca.doeamor_apaetorres.Adapters.CategoryAdapter;
-import com.example.lucca.doeamor_apaetorres.Controllers.CategoryController;
-import com.example.lucca.doeamor_apaetorres.Models.Categories.Category;
-import com.example.lucca.doeamor_apaetorres.Models.Categories.CategoryCallBack;
-import com.example.lucca.doeamor_apaetorres.View.ExpandableHeightGridView;
-import com.example.lucca.doeamor_apaetorres.View.PartnersActivity;
+import com.example.lucca.doeamor_apaetorres.adapters.CategoryAdapter;
+import com.example.lucca.doeamor_apaetorres.callbacks.CategoryCallBack;
+import com.example.lucca.doeamor_apaetorres.controllers.CategoryController;
+import com.example.lucca.doeamor_apaetorres.dao.CategoryDao;
+import com.example.lucca.doeamor_apaetorres.dto.CategoryDTO;
+import com.example.lucca.doeamor_apaetorres.models.Category;
+import com.example.lucca.doeamor_apaetorres.retrofit.RetrofitInit;
+import com.example.lucca.doeamor_apaetorres.views.ExpandableHeightGridView;
+import com.example.lucca.doeamor_apaetorres.views.PartnersActivity;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,7 +47,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Category> searchableCategoryList;
     private CategoryController categoryController;
     private ExpandableHeightGridView grid;
-    private TextView categories;
+    private CategoryDao categoryDao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,20 +58,20 @@ public class MainActivity extends AppCompatActivity {
         setSearchtollbar();
         categoryController = new CategoryController(MainActivity.this);
 
+
         grid = findViewById(R.id.gridView1);
-        grid.setExpanded(true);
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(MainActivity.this,PartnersActivity.class);
                 Category category = (Category) grid.getAdapter().getItem(i);
-
                 intent.putExtra("id", String.valueOf(category.getId()));
+                Toast.makeText(MainActivity.this, String.valueOf(category.getId()), Toast.LENGTH_SHORT).show();
                 startActivity(intent);
             }
         });
-        loadGridCategories();
-
+        retrofitInit();
+   // loadGridCategories();
     }
     private void loadGridCategories(){
         categoryController.getCategories(new CategoryCallBack<ArrayList<Category>>() {
@@ -71,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
                 adapter = new CategoryAdapter(MainActivity.this, categories);
                 searchableCategoryList = categories;
                 grid.setAdapter(adapter);
-                grid.setExpanded(true);
             }
             @Override
             public void onError() {
@@ -80,10 +88,39 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    @Override
-    protected void onRestart() {
+
+    public void retrofitInit(){
+        Call <CategoryDTO> call= new RetrofitInit().getCategoryService().getCategories();
+
+        call.enqueue(new Callback<CategoryDTO>() {
+            @Override
+            public void onResponse(@NonNull Call<CategoryDTO> call, @NonNull Response<CategoryDTO> response) {
+                CategoryDTO dto = response.body();
+                categoryDao = new CategoryDao(getApplicationContext());
+                searchableCategoryList = dto.getCategory();
+                categoryDao.sync(searchableCategoryList);
+                adapter = new CategoryAdapter(MainActivity.this, categoryDao.getCategoriesDataBase());
+                grid.setAdapter(adapter);
+                grid.setExpanded(true);
+                searchableCategoryList.clear();
+                Log.e("onResponse ",  "deu certo" );
+
+            }
+            @Override
+            public void onFailure(Call<CategoryDTO> call, Throwable t) {
+                Log.e("onFailure: ",t.getMessage() );
+            }
+        });
+    }
+        protected void onRestart() {
         super.onRestart();
 
+    }
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
     }
 
     @Override
@@ -97,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_status:
-                Toast.makeText(this, "Home Status Click", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "status", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.action_search:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
@@ -108,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                 item_search.expandActionView();
                 return true;
             case R.id.action_settings:
-                Toast.makeText(this, "Home Settings Click", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "settings", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -116,10 +153,7 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public boolean onSupportNavigateUp(){
-        categories = findViewById(R.id.categories);
-        categories.setVisibility(View.INVISIBLE);
 
-        finish();
         return true;
     }
     public void setSearchtollbar()
@@ -155,7 +189,6 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
-                    // Do something when expanded
                     return true;
                 }
             });
@@ -179,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Change search close button image
 
-        ImageView closeButton = (ImageView) searchView.findViewById(R.id.search_close_btn);
+        ImageView closeButton =  searchView.findViewById(R.id.search_close_btn);
         closeButton.setImageResource(R.drawable.close);
 
         // set hint and the text colors
@@ -213,6 +246,7 @@ public class MainActivity extends AppCompatActivity {
                 adapter = new CategoryAdapter(MainActivity.this, searchable);
                 grid.setAdapter(adapter);
                 grid.setExpanded(true);
+
                 callSearch(query);
                 searchView.clearFocus();
                 return true;
@@ -220,14 +254,17 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+
+                categoryDao = new CategoryDao(getApplicationContext());
                 ArrayList<Category> searchable = new ArrayList<>();
-                for (Category p: searchableCategoryList) {
+                for (Category p: categoryDao.getCategoriesDataBase()) {
                     if(p.getNameCat().toLowerCase().contains(newText.toLowerCase())){
                         searchable.add(p);
                     }
                 }
                 adapter = new CategoryAdapter(MainActivity.this, searchable);
                 grid.setAdapter(adapter);
+                grid.setExpanded(true);
 
 
                 return false;

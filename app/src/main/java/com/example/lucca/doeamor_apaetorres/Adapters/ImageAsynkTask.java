@@ -1,9 +1,7 @@
-package com.example.lucca.doeamor_apaetorres.Adapters;
+package com.example.lucca.doeamor_apaetorres.adapters;
 
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
-
-import java.io.IOException;
 
 public class ImageAsynkTask extends AsyncTask<String,Void,Bitmap> {
 

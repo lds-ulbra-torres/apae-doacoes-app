@@ -1,4 +1,4 @@
-package com.example.lucca.doeamor_apaetorres.View;
+package com.example.lucca.doeamor_apaetorres.views;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,9 +7,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.lucca.doeamor_apaetorres.Models.Partners.Partner;
 import com.example.lucca.doeamor_apaetorres.R;
+import com.example.lucca.doeamor_apaetorres.models.Partner;
 
 public class DetailPartner extends AppCompatActivity {
     private Partner partner;
@@ -25,17 +24,17 @@ public class DetailPartner extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_partner1);
+
         getAllExtras();
         bindViews();
-        name.setText(partner.getFantasyNamePartner());
-        phone.setText(partner.getCommerciaPhonePartner());
-        street.setText(partner.getStreetPartner()+", ");
-        number.setText(partner.getNumberPartner());
+
+        name.setText(partner.getFantasy_name_partner());
+        phone.setText(partner.getCommercial_phone_partner());
+        street.setText(partner.getStreet_partner()+", ");
+        number.setText(partner.getNumber_partner());
 
         Glide.with(this)
-                .load("http://doacoes.apaetorres.org.br/" + partner.getPhotoPartner())
-                .diskCacheStrategy( DiskCacheStrategy.ALL )
-                .error(R.drawable.ic_image_off)
+                .load("http://doacoes.apaetorres.org.br/" + partner.getPhoto_partner())
                 .into(photo);
     }
 
@@ -43,12 +42,12 @@ public class DetailPartner extends AppCompatActivity {
     private void getAllExtras() {
         partner = new Partner();
         Intent intent = getIntent();
-        partner.setFantasyNamePartner(intent.getStringExtra("name"));
-        partner.setPhotoPartner(intent.getStringExtra("partnerPhoto"));
-        partner.setCommerciaPhonePartner(intent.getStringExtra("partnerPhone"));
-        partner.setStreetPartner(intent.getStringExtra("partnerStreet"));
-        partner.setNumberPartner(intent.getStringExtra("partnerNumber"));
-        partner.setCepPartner(intent.getStringExtra("partnerState"));
+        partner.setFantasy_name_partner(intent.getStringExtra("name"));
+        partner.setPhoto_partner(intent.getStringExtra("partnerPhoto"));
+        partner.setCommercial_phone_partner(intent.getStringExtra("partnerPhone"));
+        partner.setStreet_partner(intent.getStringExtra("partnerStreet"));
+        partner.setNumber_partner(intent.getStringExtra("partnerNumber"));
+        partner.setCep_partner(intent.getStringExtra("partnerState"));
     }
 
     private void bindViews(){

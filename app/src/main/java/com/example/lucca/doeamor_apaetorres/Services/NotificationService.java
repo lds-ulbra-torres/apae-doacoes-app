@@ -1,9 +1,8 @@
-package com.example.lucca.doeamor_apaetorres.Services;
+package com.example.lucca.doeamor_apaetorres.services;
 
 import android.app.NotificationManager;
 import android.support.v4.app.NotificationCompat;
 
-import com.example.lucca.doeamor_apaetorres.R;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
