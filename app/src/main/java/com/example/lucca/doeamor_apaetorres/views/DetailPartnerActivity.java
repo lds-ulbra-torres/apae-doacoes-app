@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide;
 import com.example.lucca.doeamor_apaetorres.R;
 import com.example.lucca.doeamor_apaetorres.models.Partner;
 
-public class DetailPartner extends AppCompatActivity {
+public class DetailPartnerActivity extends AppCompatActivity {
     private Partner partner;
 
     private TextView name;

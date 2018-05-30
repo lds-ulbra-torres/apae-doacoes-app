@@ -1,4 +1,4 @@
-package com.example.lucca.doeamor_apaetorres.adapters;
+package com.example.lucca.doeamor_apaetorres.adapters.partner;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -61,5 +61,11 @@ public class PartnerAdapter extends ArrayAdapter<Partner> {
                 .with(getContext())
                 .load("http://apaetorres.org.br/doacoes" + partner.getPhoto_partner())
                 .into(imgBackground);
+    }
+
+    public static interface ItemClickListener {
+
+        void onItemClick(View v, int pos);
+
     }
 }

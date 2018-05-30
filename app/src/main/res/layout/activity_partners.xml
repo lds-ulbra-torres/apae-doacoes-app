@@ -19,7 +19,7 @@
             <include layout="@layout/activity_toolbar" />
 
             <include
-                layout="@layout/search_toolbar"
+                layout="@layout/searchtb"
                 android:visibility="gone" />
         </RelativeLayout>
 

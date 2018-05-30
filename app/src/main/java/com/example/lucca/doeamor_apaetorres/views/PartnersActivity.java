@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.lucca.doeamor_apaetorres.R;
-import com.example.lucca.doeamor_apaetorres.adapters.PartnerAdapter;
+import com.example.lucca.doeamor_apaetorres.adapters.partner.PartnerAdapter;
 import com.example.lucca.doeamor_apaetorres.callbacks.PartnerCallback;
 import com.example.lucca.doeamor_apaetorres.controllers.PartnerController;
 import com.example.lucca.doeamor_apaetorres.dao.PartnerDao;
@@ -52,18 +53,19 @@ public class PartnersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_partners);
         Intent intent = getIntent();
         String idCat = intent.getStringExtra("id");
-        toolbar = findViewById(R.id.toolbar);
+        String name = intent.getStringExtra("name");
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getActionBar();
         setSearchtollbar();
-        lvPartners =  findViewById(R.id.lvPartners);
+        lvPartners = (ExpandableHeightGridView) findViewById(R.id.lvPartners);
         lvPartners.setExpanded(true);
 
         lvPartners.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Intent intent = new Intent(PartnersActivity.this, DetailPartner.class);
+                Intent intent = new Intent(PartnersActivity.this, DetailPartnerActivity.class);
                 Partner partner = (Partner) lvPartners.getAdapter().getItem(position);
                 intent.putExtra("name", partner.getFantasy_name_partner());
                 intent.putExtra("partnerPhoto", partner.getPhoto_partner());
@@ -100,7 +102,7 @@ public class PartnersActivity extends AppCompatActivity {
         });
     }
 
-    public void retrofitInit(final String idCat){
+    public void retrofitInit(String idCat){
         Call <PartnerDTO> call= new RetrofitInit().getPartnerService().getPartners(idCat);
 
         call.enqueue(new Callback<PartnerDTO>() {
@@ -119,6 +121,8 @@ public class PartnersActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<PartnerDTO> call, Throwable t) {
                 Log.e("onFailure: ",t.getMessage() );
+                Toast.makeText(PartnersActivity.this, "Ainda não existem parceiros para esta categoria.", Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -138,7 +142,7 @@ public class PartnersActivity extends AppCompatActivity {
                 return true;
             case R.id.action_search:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                    circleReveal(R.id.searchtoolbar,1,true,true);
+                    circleReveal(R.id.toolbar,1,true,true);
                 else
                     searchtollbar.setVisibility(View.VISIBLE);
 
@@ -159,7 +163,7 @@ public class PartnersActivity extends AppCompatActivity {
     }
     public void setSearchtollbar()
     {
-        searchtollbar =  findViewById(R.id.searchtoolbar);
+        searchtollbar =  findViewById(R.id.toolbar);
         if (searchtollbar != null) {
             searchtollbar.inflateMenu(R.menu.menu_search);
             search_menu=searchtollbar.getMenu();
@@ -168,7 +172,7 @@ public class PartnersActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                        circleReveal(R.id.searchtoolbar,1,true,false);
+                        circleReveal(R.id.toolbar,1,true,false);
                     else
                         searchtollbar.setVisibility(View.GONE);
                 }
@@ -181,7 +185,7 @@ public class PartnersActivity extends AppCompatActivity {
                 public boolean onMenuItemActionCollapse(MenuItem item) {
                     // Do something when collapsed
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        circleReveal(R.id.searchtoolbar,1,true,false);
+                        circleReveal(R.id.toolbar,1,true,false);
                     }
                     else
                         searchtollbar.setVisibility(View.GONE);

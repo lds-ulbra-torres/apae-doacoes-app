@@ -1,35 +1,40 @@
-package com.example.lucca.doeamor_apaetorres;
+package com.example.lucca.doeamor_apaetorres.views;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
-import android.widget.AdapterView;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.lucca.doeamor_apaetorres.adapters.CategoryAdapter;
-import com.example.lucca.doeamor_apaetorres.callbacks.CategoryCallBack;
-import com.example.lucca.doeamor_apaetorres.controllers.CategoryController;
+import com.example.lucca.doeamor_apaetorres.R;
+import com.example.lucca.doeamor_apaetorres.adapters.HidingScrollListener;
+import com.example.lucca.doeamor_apaetorres.adapters.category.RecyclerAdapter;
 import com.example.lucca.doeamor_apaetorres.dao.CategoryDao;
 import com.example.lucca.doeamor_apaetorres.dto.CategoryDTO;
 import com.example.lucca.doeamor_apaetorres.models.Category;
 import com.example.lucca.doeamor_apaetorres.retrofit.RetrofitInit;
-import com.example.lucca.doeamor_apaetorres.views.ExpandableHeightGridView;
-import com.example.lucca.doeamor_apaetorres.views.PartnersActivity;
+import com.example.lucca.doeamor_apaetorres.utils.Utils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -38,71 +43,82 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
 
-    android.support.v7.widget.Toolbar toolbar, searchtollbar;
+public class CategoryActivity extends AppCompatActivity {
+    Toolbar toolbar;
+    Toolbar proc;
     Menu search_menu;
     MenuItem item_search;
-    private CategoryAdapter adapter;
+    private RecyclerView recyclerView;
     private ArrayList<Category> searchableCategoryList;
-    private CategoryController categoryController;
-    private ExpandableHeightGridView grid;
     private CategoryDao categoryDao;
+    private int mToolbarHeight;
+    private LinearLayout mToolbarContainer;
+    private RecyclerAdapter recyclerAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_category);
+        mToolbarContainer =  findViewById(R.id.toolbarContainer);
         toolbar = findViewById(R.id.toolbar);
+        proc = findViewById(R.id.procurar);
         setSupportActionBar(toolbar);
         setSearchtollbar();
-        categoryController = new CategoryController(MainActivity.this);
+        toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
+        mToolbarHeight = Utils.getToolbarHeight(this);
+        initRetrofit();
 
-
-        grid = findViewById(R.id.gridView1);
-        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(MainActivity.this,PartnersActivity.class);
-                Category category = (Category) grid.getAdapter().getItem(i);
-                intent.putExtra("id", String.valueOf(category.getId()));
-                Toast.makeText(MainActivity.this, String.valueOf(category.getId()), Toast.LENGTH_SHORT).show();
-                startActivity(intent);
-            }
-        });
-        retrofitInit();
-   // loadGridCategories();
-    }
-    private void loadGridCategories(){
-        categoryController.getCategories(new CategoryCallBack<ArrayList<Category>>() {
-            @Override
-            public void onSuccess(ArrayList<Category> categories) {
-                adapter = new CategoryAdapter(MainActivity.this, categories);
-                searchableCategoryList = categories;
-                grid.setAdapter(adapter);
-            }
-            @Override
-            public void onError() {
-                Toast.makeText(MainActivity.this, "Ocorreu um erro, por favor, feche e abra o aplicativo", Toast.LENGTH_SHORT).show();
-
-            }
-        });
     }
 
-    public void retrofitInit(){
-        Call <CategoryDTO> call= new RetrofitInit().getCategoryService().getCategories();
+
+    private void initRecyclerView() {
+        final RecyclerView recyclerView = findViewById(R.id.recyclerView);
+
+        int paddingTop = Utils.getToolbarHeight(this) + Utils.getTabsHeight(this);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setPadding(recyclerView.getPaddingLeft(), paddingTop, recyclerView.getPaddingRight(), recyclerView.getPaddingBottom());
+        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        recyclerAdapter = new RecyclerAdapter(this,categoryDao.getCategoriesDataBase());
+        recyclerView.setAdapter(recyclerAdapter);
+
+        recyclerView.addOnScrollListener(new HidingScrollListener(this) {
+
+            @Override
+            public void onMoved(int distance) {
+                mToolbarContainer.setTranslationY(-distance);
+                search_menu.close();
+            }
+
+            @Override
+            public void onShow() {
+                mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+            }
+
+            @Override
+            public void onHide() {
+                mToolbarContainer.animate().translationY(-mToolbarHeight).setInterpolator(new AccelerateInterpolator(2)).start();
+            }
+
+        });
+
+    }
+
+    public void initRetrofit(){
+        Call<CategoryDTO> call= new RetrofitInit().getCategoryService().getCategories();
 
         call.enqueue(new Callback<CategoryDTO>() {
             @Override
             public void onResponse(@NonNull Call<CategoryDTO> call, @NonNull Response<CategoryDTO> response) {
                 CategoryDTO dto = response.body();
-                categoryDao = new CategoryDao(getApplicationContext());
                 searchableCategoryList = dto.getCategory();
+                categoryDao = new CategoryDao(getApplicationContext());
                 categoryDao.sync(searchableCategoryList);
-                adapter = new CategoryAdapter(MainActivity.this, categoryDao.getCategoriesDataBase());
-                grid.setAdapter(adapter);
-                grid.setExpanded(true);
                 searchableCategoryList.clear();
+                initRecyclerView();
+
                 Log.e("onResponse ",  "deu certo" );
 
             }
@@ -112,15 +128,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-        protected void onRestart() {
+    protected void onRestart() {
         super.onRestart();
 
-    }
-
-    @Override
-    protected void onResume() {
-
-        super.onResume();
     }
 
     @Override
@@ -134,42 +144,35 @@ public class MainActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_status:
-                Toast.makeText(this, "status", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Ir para Sobre", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.action_search:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                    circleReveal(R.id.searchtoolbar,1,true,true);
-                else
-                    searchtollbar.setVisibility(View.VISIBLE);
-
+                    circleReveal(R.id.procurar,1,true,true);
+                    proc.setVisibility(View.VISIBLE);
                 item_search.expandActionView();
                 return true;
             case R.id.action_settings:
-                Toast.makeText(this, "settings", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Ir para Settings", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-    @Override
-    public boolean onSupportNavigateUp(){
 
-        return true;
-    }
     public void setSearchtollbar()
     {
-        searchtollbar =  findViewById(R.id.searchtoolbar);
-        if (searchtollbar != null) {
-            searchtollbar.inflateMenu(R.menu.menu_search);
-            search_menu=searchtollbar.getMenu();
 
-            searchtollbar.setNavigationOnClickListener(new View.OnClickListener() {
+        if (proc != null) {
+            proc.inflateMenu(R.menu.menu_search);
+            search_menu=proc.getMenu();
+
+            proc.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                        circleReveal(R.id.searchtoolbar,1,true,false);
+                        circleReveal(R.id.procurar,1,true,false);
                     else
-                        searchtollbar.setVisibility(View.GONE);
+                        proc.setVisibility(View.GONE);
                 }
             });
 
@@ -180,15 +183,16 @@ public class MainActivity extends AppCompatActivity {
                 public boolean onMenuItemActionCollapse(MenuItem item) {
                     // Do something when collapsed
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        circleReveal(R.id.searchtoolbar,1,true,false);
+                        circleReveal(R.id.procurar,1,true,false);
                     }
                     else
-                        searchtollbar.setVisibility(View.GONE);
+                        proc.setVisibility(View.GONE);
                     return true;
                 }
 
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
+                    // Do something when expanded
                     return true;
                 }
             });
@@ -197,14 +201,12 @@ public class MainActivity extends AppCompatActivity {
 
 
         } else
-            Log.d("MyToolbar", "setSearchtollbar: NULL");
+            Log.d("toolbar", "setSearchtollbar: NULL");
     }
 
     public void initSearchView()
     {
-
-        final android.support.v7.widget.SearchView searchView =
-                (android.support.v7.widget.SearchView) search_menu.findItem(R.id.action_filter_search).getActionView();
+        final SearchView searchView =  (SearchView) search_menu.findItem(R.id.action_filter_search).getActionView();
 
         // Enable/Disable Submit button in the keyboard
 
@@ -212,20 +214,21 @@ public class MainActivity extends AppCompatActivity {
 
         // Change search close button image
 
-        ImageView closeButton =  searchView.findViewById(R.id.search_close_btn);
+        ImageView closeButton = (ImageView) searchView.findViewById(R.id.search_close_btn);
         closeButton.setImageResource(R.drawable.close);
+
 
         // set hint and the text colors
 
         EditText txtSearch = ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text));
-        txtSearch.setHint("Pesquisar..");
+        txtSearch.setHint("Pesquisar categorias...");
         txtSearch.setHintTextColor(Color.DKGRAY);
-        txtSearch.setTextColor(getResources().getColor(R.color.black));
+        txtSearch.setTextColor(getResources().getColor(R.color.colorPrimary));
 
 
         // set the cursor
 
-        AutoCompleteTextView searchTextView = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        AutoCompleteTextView searchTextView = (AutoCompleteTextView) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         try {
             Field mCursorDrawableRes = TextView.class.getDeclaredField("mCursorDrawableRes");
             mCursorDrawableRes.setAccessible(true);
@@ -234,19 +237,9 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                ArrayList<Category> searchable = new ArrayList<>();
-                for (Category p: searchableCategoryList) {
-                    if(p.getNameCat().toLowerCase().contains(query.toLowerCase())){
-                        searchable.add(p);
-                    }
-                }
-                adapter = new CategoryAdapter(MainActivity.this, searchable);
-                grid.setAdapter(adapter);
-                grid.setExpanded(true);
-
                 callSearch(query);
                 searchView.clearFocus();
                 return true;
@@ -254,20 +247,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-
-                categoryDao = new CategoryDao(getApplicationContext());
-                ArrayList<Category> searchable = new ArrayList<>();
-                for (Category p: categoryDao.getCategoriesDataBase()) {
-                    if(p.getNameCat().toLowerCase().contains(newText.toLowerCase())){
-                        searchable.add(p);
-                    }
-                }
-                adapter = new CategoryAdapter(MainActivity.this, searchable);
-                grid.setAdapter(adapter);
-                grid.setExpanded(true);
-
-
-                return false;
+                callSearch(newText);
+                recyclerAdapter.getFilter().filter(newText);
+                Log.i("query", "" + newText);
+                return true;
             }
 
             public void callSearch(String query) {
@@ -284,8 +267,8 @@ public class MainActivity extends AppCompatActivity {
     {
         final View myView = findViewById(viewID);
 
-        int width=myView.getWidth();
-
+        int width = myView.getWidth();
+        System.out.println(width);
         if(posFromRight>0)
             width-=(posFromRight*getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material))-(getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material)/ 2);
         if(containsOverflow)
@@ -323,6 +306,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
 
 
 }

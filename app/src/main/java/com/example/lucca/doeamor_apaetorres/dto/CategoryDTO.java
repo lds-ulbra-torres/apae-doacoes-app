@@ -7,7 +7,6 @@ public class CategoryDTO {
 
     private ArrayList<Category> category;
 
-
     public ArrayList<Category> getCategory(){
         return category;
     }
