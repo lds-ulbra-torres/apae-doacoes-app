@@ -9,27 +9,35 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.lucca.doeamor_apaetorres.R;
+import com.example.lucca.doeamor_apaetorres.adapters.HidingScrollListener;
+import com.example.lucca.doeamor_apaetorres.adapters.category.CategoryAdapter;
 import com.example.lucca.doeamor_apaetorres.adapters.partner.PartnerAdapter;
-import com.example.lucca.doeamor_apaetorres.callbacks.PartnerCallback;
-import com.example.lucca.doeamor_apaetorres.controllers.PartnerController;
 import com.example.lucca.doeamor_apaetorres.dao.PartnerDao;
 import com.example.lucca.doeamor_apaetorres.dto.PartnerDTO;
 import com.example.lucca.doeamor_apaetorres.models.Partner;
 import com.example.lucca.doeamor_apaetorres.retrofit.RetrofitInit;
+import com.example.lucca.doeamor_apaetorres.utils.Utils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -42,11 +50,13 @@ public class PartnersActivity extends AppCompatActivity {
     android.support.v7.widget.Toolbar toolbar, searchtollbar;
     Menu search_menu;
     MenuItem item_search;
-    private ExpandableHeightGridView lvPartners;
-    private PartnerAdapter adapter;
+    private LinearLayout mToolbarContainer;
     private ArrayList<Partner> searchablePartnerList= new ArrayList<>();
-    private PartnerController partnerController;
     private PartnerDao partnerDao;
+    private PartnerAdapter recyclerAdapter;
+    private RecyclerView recyclerView;
+    private int mToolbarHeight;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,28 +64,24 @@ public class PartnersActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String idCat = intent.getStringExtra("id");
         String name = intent.getStringExtra("name");
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
+        mToolbarContainer =  findViewById(R.id.toolbarContainerPartner);
         setSupportActionBar(toolbar);
-        getActionBar();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(name);
         setSearchtollbar();
-        lvPartners = (ExpandableHeightGridView) findViewById(R.id.lvPartners);
-        lvPartners.setExpanded(true);
 
-        lvPartners.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Intent intent = new Intent(PartnersActivity.this, DetailPartnerActivity.class);
-                Partner partner = (Partner) lvPartners.getAdapter().getItem(position);
-                intent.putExtra("name", partner.getFantasy_name_partner());
-                intent.putExtra("partnerPhoto", partner.getPhoto_partner());
-                intent.putExtra("partnerPhone", partner.getCommercial_phone_partner());
-                intent.putExtra("partnerStreet",partner.getStreet_partner());
-                intent.putExtra("partnerNumber", partner.getNumber_partner());
-                intent.putExtra("partnerState",partner.getCep_partner());
-                startActivity(intent);
-            }
-        });
+        /*
+        Intent intent1 = new Intent(PartnersActivity.this, DetailPartnerActivity.class);
+        Partner partner = (Partner) recyclerView.getAdapter().getItemId(5);
+        intent1.putExtra("name", partner.getFantasy_name_partner());
+        intent1.putExtra("partnerPhoto", partner.getPhoto_partner());
+        intent1.putExtra("partnerPhone", partner.getCommercial_phone_partner());
+        intent1.putExtra("partnerStreet",partner.getStreet_partner());
+        intent1.putExtra("partnerNumber", partner.getNumber_partner());
+        intent1.putExtra("partnerState",partner.getCep_partner());
+        startActivity(intent);
+        */
 
         retrofitInit(idCat);
 
@@ -86,21 +92,6 @@ public class PartnersActivity extends AppCompatActivity {
         super.onRestart();
     }
 
-    private void loadListPartners(){
-        partnerController.getPartners(new PartnerCallback<ArrayList<Partner>>() {
-            @Override
-            public void onSuccess(ArrayList<Partner> partners) {
-                adapter = new PartnerAdapter(PartnersActivity.this, partners);
-                searchablePartnerList = partners;
-                lvPartners.setAdapter(adapter);
-
-            }
-            @Override
-            public void onError() {
-                Toast.makeText(PartnersActivity.this, "Ocorreu um erro, por favor, feche e abra o aplicativo", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 
     public void retrofitInit(String idCat){
         Call <PartnerDTO> call= new RetrofitInit().getPartnerService().getPartners(idCat);
@@ -112,8 +103,7 @@ public class PartnersActivity extends AppCompatActivity {
                 partnerDao = new PartnerDao(getApplicationContext());
                 searchablePartnerList = dto.getPartners();
                 partnerDao.insert(searchablePartnerList);
-                adapter = new PartnerAdapter(PartnersActivity.this, partnerDao.getPartnersDataBase());
-                lvPartners.setAdapter(adapter);
+                initRecyclerView();
                 partnerDao.clearPartnersFromDatabase();
                 Log.e("onResponse ",  "deu certo" );
 
@@ -125,6 +115,37 @@ public class PartnersActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void initRecyclerView() {
+        final RecyclerView recyclerView = findViewById(R.id.recyclerViewPartners);
+
+        int paddingTop = Utils.getToolbarHeight(this) + Utils.getTabsHeight(this);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setPadding(recyclerView.getPaddingLeft(), paddingTop, recyclerView.getPaddingRight(), recyclerView.getPaddingBottom());
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerAdapter = new PartnerAdapter(this,searchablePartnerList);
+        recyclerView.setAdapter(recyclerAdapter);
+        recyclerView.addOnScrollListener(new HidingScrollListener(this) {
+
+            @Override
+            public void onMoved(int distance) {
+                mToolbarContainer.setTranslationY(-distance);
+                search_menu.close();
+            }
+
+            @Override
+            public void onShow() {
+                mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+            }
+
+            @Override
+            public void onHide() {
+                mToolbarContainer.animate().translationY(-mToolbarHeight).setInterpolator(new AccelerateInterpolator(4)).start();
+            }
+
+        });
+
     }
 
     @Override
@@ -140,6 +161,10 @@ public class PartnersActivity extends AppCompatActivity {
             case R.id.action_status:
                 Toast.makeText(this, "Home Status Click", Toast.LENGTH_SHORT).show();
                 return true;
+
+            case R.id.showHome:
+                Intent intent = new Intent(this, CategoryActivity.class);
+                this.startActivity(intent);
             case R.id.action_search:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                     circleReveal(R.id.toolbar,1,true,true);
@@ -172,8 +197,8 @@ public class PartnersActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                        circleReveal(R.id.toolbar,1,true,false);
-                    else
+                        //circleReveal(R.id.toolbar,1,true,false);
+                    //else
                         searchtollbar.setVisibility(View.GONE);
                 }
             });
@@ -249,9 +274,7 @@ public class PartnersActivity extends AppCompatActivity {
                         searchable.add(p);
                     }
                 }
-                adapter = new PartnerAdapter(PartnersActivity.this, searchable);
-                lvPartners.setAdapter(adapter);
-                lvPartners.setExpanded(true);
+
                 callSearch(query);
                 searchView.clearFocus();
                 return true;
@@ -266,9 +289,7 @@ public class PartnersActivity extends AppCompatActivity {
                     }
                 }
 
-                adapter = new PartnerAdapter(PartnersActivity.this, searchable);
-                lvPartners.setAdapter(adapter);
-                lvPartners.setExpanded(true);
+
 
                 return false;
             }

@@ -3,6 +3,8 @@
     android:layout_height="match_parent">
 
     <android.support.v7.widget.RecyclerView
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,16 +16,16 @@
         android:id="@+id/toolbarContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="?attr/colorPrimary">
+        android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <include layout="@layout/activity_toolbar"/>
-        <include layout="@layout/searchtb"
-            android:visibility="gone"/>
+            <include layout="@layout/toolbar"/>
+            <include layout="@layout/search_toolbar"
+                android:visibility="gone"/>
         </RelativeLayout>
+
     </LinearLayout>
 
 </FrameLayout>

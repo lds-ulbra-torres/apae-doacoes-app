@@ -1,39 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent">
+
+<android.support.v7.widget.RecyclerView
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:id="@+id/recyclerViewPartners"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="wrap_content"
+    android:clipToPadding="false"
 
-    <LinearLayout
+    />
+
+<LinearLayout
+    android:id="@+id/toolbarContainerPartner"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="4dp"
-        android:orientation="vertical"
-        android:overScrollMode="ifContentScrolls">
+        android:layout_height="wrap_content">
+        <include layout="@layout/toolbar"/>
+        <include layout="@layout/search_toolbar"
+            android:visibility="gone"/>
+    </RelativeLayout>
+</LinearLayout>
 
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/activity_search_view_check"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <include layout="@layout/activity_toolbar" />
-
-            <include
-                layout="@layout/searchtb"
-                android:visibility="gone" />
-        </RelativeLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Parceiros"
-            android:textAlignment="center"
-            android:textColor="#353D35"
-            android:textSize="30sp"
-            android:textStyle="bold" />
-
-        <include layout="@layout/activity_grid_partners"
-             />
-
-    </LinearLayout>
-</ScrollView>
+</FrameLayout>

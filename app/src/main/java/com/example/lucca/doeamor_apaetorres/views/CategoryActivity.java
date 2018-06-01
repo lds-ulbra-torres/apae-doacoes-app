@@ -29,7 +29,7 @@ import android.widget.Toast;
 
 import com.example.lucca.doeamor_apaetorres.R;
 import com.example.lucca.doeamor_apaetorres.adapters.HidingScrollListener;
-import com.example.lucca.doeamor_apaetorres.adapters.category.RecyclerAdapter;
+import com.example.lucca.doeamor_apaetorres.adapters.category.CategoryAdapter;
 import com.example.lucca.doeamor_apaetorres.dao.CategoryDao;
 import com.example.lucca.doeamor_apaetorres.dto.CategoryDTO;
 import com.example.lucca.doeamor_apaetorres.models.Category;
@@ -45,8 +45,9 @@ import retrofit2.Response;
 
 
 public class CategoryActivity extends AppCompatActivity {
+
     Toolbar toolbar;
-    Toolbar proc;
+    Toolbar searchToolbar;
     Menu search_menu;
     MenuItem item_search;
     private RecyclerView recyclerView;
@@ -54,7 +55,7 @@ public class CategoryActivity extends AppCompatActivity {
     private CategoryDao categoryDao;
     private int mToolbarHeight;
     private LinearLayout mToolbarContainer;
-    private RecyclerAdapter recyclerAdapter;
+    private CategoryAdapter recyclerAdapter;
 
 
     @Override
@@ -63,7 +64,7 @@ public class CategoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_category);
         mToolbarContainer =  findViewById(R.id.toolbarContainer);
         toolbar = findViewById(R.id.toolbar);
-        proc = findViewById(R.id.procurar);
+        searchToolbar = findViewById(R.id.searchFor);
         setSupportActionBar(toolbar);
         setSearchtollbar();
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
@@ -74,14 +75,15 @@ public class CategoryActivity extends AppCompatActivity {
 
 
     private void initRecyclerView() {
+
         final RecyclerView recyclerView = findViewById(R.id.recyclerView);
 
-        int paddingTop = Utils.getToolbarHeight(this) + Utils.getTabsHeight(this);
+        int paddingTop = Utils.getToolbarHeight(this);
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setPadding(recyclerView.getPaddingLeft(), paddingTop, recyclerView.getPaddingRight(), recyclerView.getPaddingBottom());
         recyclerView.setLayoutManager(new GridLayoutManager(this,2));
-        recyclerAdapter = new RecyclerAdapter(this,categoryDao.getCategoriesDataBase());
+        recyclerAdapter = new CategoryAdapter(this,categoryDao.getCategoriesDataBase());
         recyclerView.setAdapter(recyclerAdapter);
 
         recyclerView.addOnScrollListener(new HidingScrollListener(this) {
@@ -99,7 +101,7 @@ public class CategoryActivity extends AppCompatActivity {
 
             @Override
             public void onHide() {
-                mToolbarContainer.animate().translationY(-mToolbarHeight).setInterpolator(new AccelerateInterpolator(2)).start();
+                mToolbarContainer.animate().translationY(-mToolbarHeight).setInterpolator(new AccelerateInterpolator(4)).start();
             }
 
         });
@@ -147,8 +149,8 @@ public class CategoryActivity extends AppCompatActivity {
                 Toast.makeText(this, "Ir para Sobre", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.action_search:
-                    circleReveal(R.id.procurar,1,true,true);
-                    proc.setVisibility(View.VISIBLE);
+                    circleReveal(R.id.searchFor,1,true,true);
+                    searchToolbar.setVisibility(View.VISIBLE);
                 item_search.expandActionView();
                 return true;
             case R.id.action_settings:
@@ -162,17 +164,17 @@ public class CategoryActivity extends AppCompatActivity {
     public void setSearchtollbar()
     {
 
-        if (proc != null) {
-            proc.inflateMenu(R.menu.menu_search);
-            search_menu=proc.getMenu();
+        if ( searchToolbar != null) {
+            searchToolbar.inflateMenu(R.menu.menu_search);
+            search_menu= searchToolbar.getMenu();
 
-            proc.setNavigationOnClickListener(new View.OnClickListener() {
+            searchToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                        circleReveal(R.id.procurar,1,true,false);
+                        circleReveal(R.id.searchFor,1,true,false);
                     else
-                        proc.setVisibility(View.GONE);
+                        searchToolbar.setVisibility(View.GONE);
                 }
             });
 
@@ -183,10 +185,10 @@ public class CategoryActivity extends AppCompatActivity {
                 public boolean onMenuItemActionCollapse(MenuItem item) {
                     // Do something when collapsed
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        circleReveal(R.id.procurar,1,true,false);
+                        circleReveal(R.id.searchFor,1,true,false);
                     }
                     else
-                        proc.setVisibility(View.GONE);
+                        searchToolbar.setVisibility(View.GONE);
                     return true;
                 }
 
@@ -241,6 +243,7 @@ public class CategoryActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 callSearch(query);
+                recyclerAdapter.getFilter().filter(query);
                 searchView.clearFocus();
                 return true;
             }

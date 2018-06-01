@@ -13,12 +13,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".views.PartnersActivity"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.test.internal.runner.TestRequestBuilder.ParentFilter"
-                android:parentActivityName=".views.MainActivity"
-                android:value=".MainActivity" />
-        </activity>
+            android:parentActivityName=".views.CategoryActivity"></activity>
         <activity android:name=".views.DetailPartnerActivity" />
 
         <!--
@@ -43,6 +38,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".views.PartnerTestActivity"
+            android:label="@string/title_activity_partner_test"
+            android:theme="@style/AppTheme"
+            android:parentActivityName=".views.CategoryActivity"></activity>
     </application>
 
 </manifest>

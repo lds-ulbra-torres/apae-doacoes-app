@@ -1,18 +1,18 @@
-package com.example.lucca.doeamor_apaetorres.adapters.category;
+package com.example.lucca.doeamor_apaetorres.adapters.partner;
 
 import android.widget.Filter;
 
-import com.example.lucca.doeamor_apaetorres.models.Category;
+import com.example.lucca.doeamor_apaetorres.adapters.partner.PartnerAdapter;
+import com.example.lucca.doeamor_apaetorres.models.Partner;
 
 import java.util.ArrayList;
 
-public class CustomFilter extends Filter {
+public class CustomFilterPartner extends Filter {
+    private PartnerAdapter adapter;
+    private ArrayList<Partner> filterList;
 
-    CategoryAdapter adapter;
-    ArrayList<Category> filterList;
 
-
-    public CustomFilter(ArrayList<Category> filterList, CategoryAdapter adapter)
+    public CustomFilterPartner(ArrayList<Partner> filterList, PartnerAdapter adapter)
     {
         this.adapter=adapter;
         this.filterList=filterList;
@@ -21,8 +21,8 @@ public class CustomFilter extends Filter {
 
     //FILTERING OCURS
     @Override
-    protected FilterResults performFiltering(CharSequence constraint) {
-        FilterResults results=new FilterResults();
+    protected Filter.FilterResults performFiltering(CharSequence constraint) {
+        Filter.FilterResults results=new Filter.FilterResults();
 
         //CHECK CONSTRAINT VALIDITY
         if(constraint != null && constraint.length() > 0)
@@ -30,12 +30,12 @@ public class CustomFilter extends Filter {
             //CHANGE TO UPPER
             constraint=constraint.toString().toUpperCase();
             //STORE OUR FILTERED PLAYERS
-            ArrayList<Category> filteredPlayers=new ArrayList<>();
+            ArrayList<Partner> filteredPlayers=new ArrayList<>();
 
             for (int i=0;i<filterList.size();i++)
             {
                 //CHECK
-                if(filterList.get(i).getNameCat().toUpperCase().contains(constraint))
+                if(filterList.get(i).getFantasy_name_partner().toUpperCase().contains(constraint))
                 {
                     //ADD PLAYER TO FILTERED PLAYERS
                     filteredPlayers.add(filterList.get(i));
@@ -56,9 +56,9 @@ public class CustomFilter extends Filter {
     }
 
     @Override
-    protected void publishResults(CharSequence constraint, FilterResults results) {
+    protected void publishResults(CharSequence constraint, Filter.FilterResults results) {
 
-        adapter.mCategories= (ArrayList<Category>) results.values;
+        adapter.mPartners= (ArrayList<Partner>) results.values;
 
         //REFRESH
         adapter.notifyDataSetChanged();

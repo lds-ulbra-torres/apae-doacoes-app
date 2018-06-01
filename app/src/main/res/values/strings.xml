@@ -8,5 +8,6 @@
     <string name="action_status">Status</string>
     <string name="action_settings">Sobre</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_partner_test">PartnerTestActivity</string>
 
 </resources>

@@ -6,16 +6,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.lucca.doeamor_apaetorres.R;
-import com.example.lucca.doeamor_apaetorres.adapters.partner.PartnerAdapter;
+import com.example.lucca.doeamor_apaetorres.adapters.ItemClickListener;
 
-public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+public class RecyclerCategoryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-    TextView title;
-    ImageView imgView;
+    private final TextView title;
+    private final ImageView imgView;
 
-    PartnerAdapter.ItemClickListener itemClickListener;
+    private ItemClickListener itemClickListener;
 
-    public RecyclerItemViewHolder(final View parent, ImageView img, TextView titulo) {
+    public RecyclerCategoryViewHolder(final View parent, ImageView img, TextView titulo) {
         super(parent);
         title = titulo;
         imgView = img;
@@ -27,18 +27,18 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
         this.itemClickListener.onItemClick(v,getLayoutPosition());
 
     }
-    public void setItemClickListener(PartnerAdapter.ItemClickListener ic)
+    public void setItemClickListener(ItemClickListener ic)
     {
         this.itemClickListener=ic;
     }
 
-        public static RecyclerItemViewHolder newInstance(View parent) {
-
+        public static RecyclerCategoryViewHolder newInstance(View parent) {
             ImageView imgView =  parent.findViewById(R.id.imgBackground);
             TextView tvTitle = parent.findViewById(R.id.tvTitulo);
-
-            return new RecyclerItemViewHolder(parent,imgView, tvTitle);
+            return new RecyclerCategoryViewHolder(parent,imgView, tvTitle);
         }
+
+
 
     public TextView getTitle() {
         return title;
@@ -50,7 +50,7 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
 
     public void setText(CharSequence text) {
             title.setText(text);
-        }
     }
+}
 
 
