@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -47,14 +48,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PartnersActivity extends AppCompatActivity {
-    android.support.v7.widget.Toolbar toolbar, searchtollbar;
+    Toolbar toolbar, searchtollbar;
     Menu search_menu;
     MenuItem item_search;
     private LinearLayout mToolbarContainer;
     private ArrayList<Partner> searchablePartnerList= new ArrayList<>();
     private PartnerDao partnerDao;
     private PartnerAdapter recyclerAdapter;
-    private RecyclerView recyclerView;
     private int mToolbarHeight;
 
     @Override
@@ -65,24 +65,12 @@ public class PartnersActivity extends AppCompatActivity {
         String idCat = intent.getStringExtra("id");
         String name = intent.getStringExtra("name");
         toolbar = findViewById(R.id.toolbar);
+        mToolbarHeight = Utils.getToolbarHeight(this);
         mToolbarContainer =  findViewById(R.id.toolbarContainerPartner);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(name);
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
         setSearchtollbar();
-
-        /*
-        Intent intent1 = new Intent(PartnersActivity.this, DetailPartnerActivity.class);
-        Partner partner = (Partner) recyclerView.getAdapter().getItemId(5);
-        intent1.putExtra("name", partner.getFantasy_name_partner());
-        intent1.putExtra("partnerPhoto", partner.getPhoto_partner());
-        intent1.putExtra("partnerPhone", partner.getCommercial_phone_partner());
-        intent1.putExtra("partnerStreet",partner.getStreet_partner());
-        intent1.putExtra("partnerNumber", partner.getNumber_partner());
-        intent1.putExtra("partnerState",partner.getCep_partner());
-        startActivity(intent);
-        */
-
         retrofitInit(idCat);
 
     }
@@ -120,7 +108,7 @@ public class PartnersActivity extends AppCompatActivity {
     private void initRecyclerView() {
         final RecyclerView recyclerView = findViewById(R.id.recyclerViewPartners);
 
-        int paddingTop = Utils.getToolbarHeight(this) + Utils.getTabsHeight(this);
+        int paddingTop = Utils.getToolbarHeight(this);
         recyclerView.setHasFixedSize(true);
         recyclerView.setPadding(recyclerView.getPaddingLeft(), paddingTop, recyclerView.getPaddingRight(), recyclerView.getPaddingBottom());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -162,12 +150,9 @@ public class PartnersActivity extends AppCompatActivity {
                 Toast.makeText(this, "Home Status Click", Toast.LENGTH_SHORT).show();
                 return true;
 
-            case R.id.showHome:
-                Intent intent = new Intent(this, CategoryActivity.class);
-                this.startActivity(intent);
             case R.id.action_search:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                    circleReveal(R.id.toolbar,1,true,true);
+                    circleReveal(R.id.searchFor,1,true,true);
                 else
                     searchtollbar.setVisibility(View.VISIBLE);
 
@@ -188,7 +173,7 @@ public class PartnersActivity extends AppCompatActivity {
     }
     public void setSearchtollbar()
     {
-        searchtollbar =  findViewById(R.id.toolbar);
+        searchtollbar =  findViewById(R.id.searchFor);
         if (searchtollbar != null) {
             searchtollbar.inflateMenu(R.menu.menu_search);
             search_menu=searchtollbar.getMenu();
@@ -197,8 +182,8 @@ public class PartnersActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                        //circleReveal(R.id.toolbar,1,true,false);
-                    //else
+                        circleReveal(R.id.toolbar,1,true,false);
+                    else
                         searchtollbar.setVisibility(View.GONE);
                 }
             });
@@ -210,7 +195,7 @@ public class PartnersActivity extends AppCompatActivity {
                 public boolean onMenuItemActionCollapse(MenuItem item) {
                     // Do something when collapsed
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        circleReveal(R.id.toolbar,1,true,false);
+                        circleReveal(R.id.searchFor,1,true,false);
                     }
                     else
                         searchtollbar.setVisibility(View.GONE);

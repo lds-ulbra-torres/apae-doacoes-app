@@ -43,6 +43,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.example.lucca.doeamor_apaetorres.R.id.recyclerView;
+
 
 public class CategoryActivity extends AppCompatActivity {
 
@@ -50,11 +52,11 @@ public class CategoryActivity extends AppCompatActivity {
     Toolbar searchToolbar;
     Menu search_menu;
     MenuItem item_search;
-    private RecyclerView recyclerView;
+    private LinearLayout mToolbarContainer;
     private ArrayList<Category> searchableCategoryList;
     private CategoryDao categoryDao;
     private int mToolbarHeight;
-    private LinearLayout mToolbarContainer;
+
     private CategoryAdapter recyclerAdapter;
 
 
@@ -62,7 +64,7 @@ public class CategoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
-        mToolbarContainer =  findViewById(R.id.toolbarContainer);
+        mToolbarContainer = findViewById(R.id.toolbarContainer);
         toolbar = findViewById(R.id.toolbar);
         searchToolbar = findViewById(R.id.searchFor);
         setSupportActionBar(toolbar);
@@ -70,41 +72,6 @@ public class CategoryActivity extends AppCompatActivity {
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         mToolbarHeight = Utils.getToolbarHeight(this);
         initRetrofit();
-
-    }
-
-
-    private void initRecyclerView() {
-
-        final RecyclerView recyclerView = findViewById(R.id.recyclerView);
-
-        int paddingTop = Utils.getToolbarHeight(this);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setPadding(recyclerView.getPaddingLeft(), paddingTop, recyclerView.getPaddingRight(), recyclerView.getPaddingBottom());
-        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
-        recyclerAdapter = new CategoryAdapter(this,categoryDao.getCategoriesDataBase());
-        recyclerView.setAdapter(recyclerAdapter);
-
-        recyclerView.addOnScrollListener(new HidingScrollListener(this) {
-
-            @Override
-            public void onMoved(int distance) {
-                mToolbarContainer.setTranslationY(-distance);
-                search_menu.close();
-            }
-
-            @Override
-            public void onShow() {
-                mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
-            }
-
-            @Override
-            public void onHide() {
-                mToolbarContainer.animate().translationY(-mToolbarHeight).setInterpolator(new AccelerateInterpolator(4)).start();
-            }
-
-        });
 
     }
 
@@ -129,6 +96,38 @@ public class CategoryActivity extends AppCompatActivity {
                 Log.e("onFailure: ",t.getMessage() );
             }
         });
+    }
+    private void initRecyclerView() {
+
+        final RecyclerView recyclerView = findViewById(R.id.recyclerView);
+
+        int paddingTop = Utils.getToolbarHeight(this);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setPadding(recyclerView.getPaddingLeft(), paddingTop, recyclerView.getPaddingRight(), recyclerView.getPaddingBottom());
+        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        recyclerAdapter = new CategoryAdapter(this,categoryDao.getCategoriesDataBase());
+        recyclerView.setAdapter(recyclerAdapter);
+        recyclerView.addOnScrollListener(new HidingScrollListener(this) {
+
+            @Override
+            public void onMoved(int distance) {
+                mToolbarContainer.setTranslationY(-distance);
+                search_menu.close();
+            }
+
+            @Override
+            public void onShow() {
+                mToolbarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+            }
+
+            @Override
+            public void onHide() {
+                mToolbarContainer.animate().translationY(-mToolbarHeight).setInterpolator(new AccelerateInterpolator(4)).start();
+            }
+
+        });
+
     }
     protected void onRestart() {
         super.onRestart();
@@ -201,7 +200,6 @@ public class CategoryActivity extends AppCompatActivity {
 
             initSearchView();
 
-
         } else
             Log.d("toolbar", "setSearchtollbar: NULL");
     }
@@ -271,7 +269,6 @@ public class CategoryActivity extends AppCompatActivity {
         final View myView = findViewById(viewID);
 
         int width = myView.getWidth();
-        System.out.println(width);
         if(posFromRight>0)
             width-=(posFromRight*getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material))-(getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material)/ 2);
         if(containsOverflow)

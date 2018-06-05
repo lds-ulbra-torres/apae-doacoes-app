@@ -1,16 +1,27 @@
 package com.example.lucca.doeamor_apaetorres.views;
 
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.lucca.doeamor_apaetorres.R;
 import com.example.lucca.doeamor_apaetorres.models.Partner;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.maps.GoogleMapOptions;
+import com.google.android.gms.maps.SupportMapFragment;
 
-public class DetailPartnerActivity extends AppCompatActivity {
+public class DetailPartnerActivity extends FragmentActivity {
     private Partner partner;
 
     private TextView name;
@@ -19,18 +30,25 @@ public class DetailPartnerActivity extends AppCompatActivity {
     private TextView street;
     private TextView number;
     private TextView cep;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_partner);
+        GoogleMapOptions options = new GoogleMapOptions();
 
+        SupportMapFragment mapFragment = SupportMapFragment.newInstance();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.mapContainer, mapFragment);
+        ft.commit();
         getAllExtras();
         bindViews();
 
+
         name.setText(partner.getFantasy_name_partner());
         phone.setText(partner.getCommercial_phone_partner());
-        street.setText(partner.getStreet_partner()+", ");
+        street.setText(partner.getStreet_partner() + ", ");
         number.setText(partner.getNumber_partner());
 
         Glide.with(this)
@@ -50,8 +68,7 @@ public class DetailPartnerActivity extends AppCompatActivity {
         partner.setCep_partner(intent.getStringExtra("partnerState"));
     }
 
-    private void bindViews(){
-
+    private void bindViews() {
         name = findViewById(R.id.tvTituloDetailPartner);
         photo = findViewById(R.id.imageDetailPartner);
         phone = findViewById(R.id.partnerDetailPhone);
@@ -61,5 +78,6 @@ public class DetailPartnerActivity extends AppCompatActivity {
 
 
     }
+
 
 }

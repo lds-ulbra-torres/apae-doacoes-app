@@ -21,7 +21,6 @@ import com.example.lucca.doeamor_apaetorres.views.DetailPartnerActivity;
 import java.util.ArrayList;
 
 public class PartnerAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
-    private ImageView imgBackground;
     private final Context mContext;
 
      ArrayList<Partner> mPartners, filterList;
@@ -46,7 +45,7 @@ public class PartnerAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolde
         final Partner partner = mPartners.get(position);
         holder.setText(partner.getFantasy_name_partner());
         CharSequence c = String.valueOf(partner.getDiscount_partner());
-        holder.setDiscount(c);
+        holder.setDiscount("-"+c + "%");
         Glide
                 .with(mContext)
                 .load("http://apaetorres.org.br/doacoes" + partner.getPhoto_partner())
