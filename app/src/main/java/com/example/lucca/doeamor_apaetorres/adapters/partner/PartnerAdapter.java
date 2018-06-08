@@ -61,6 +61,7 @@ public class PartnerAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 intent1.putExtra("partnerStreet",partner.getStreet_partner());
                 intent1.putExtra("partnerNumber", partner.getNumber_partner());
                 intent1.putExtra("partnerState",partner.getCep_partner());
+                intent1.putExtra("cat",partner.getCategory_id_category());
                 v.getContext().startActivity(intent1);
             }
         });

@@ -2,7 +2,9 @@ package com.example.lucca.doeamor_apaetorres.views;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Context;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.view.MenuItemCompat;
@@ -71,7 +73,12 @@ public class CategoryActivity extends AppCompatActivity {
         setSearchtollbar();
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         mToolbarHeight = Utils.getToolbarHeight(this);
-        initRetrofit();
+
+        if(verifyConnection()){
+            initRetrofit();
+        }   else{
+            initRecyclerView();
+        }
 
     }
 
@@ -87,7 +94,6 @@ public class CategoryActivity extends AppCompatActivity {
                 categoryDao.sync(searchableCategoryList);
                 searchableCategoryList.clear();
                 initRecyclerView();
-
                 Log.e("onResponse ",  "deu certo" );
 
             }
@@ -106,7 +112,9 @@ public class CategoryActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setPadding(recyclerView.getPaddingLeft(), paddingTop, recyclerView.getPaddingRight(), recyclerView.getPaddingBottom());
         recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        categoryDao = new CategoryDao(getApplicationContext());
         recyclerAdapter = new CategoryAdapter(this,categoryDao.getCategoriesDataBase());
+
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.addOnScrollListener(new HidingScrollListener(this) {
 
@@ -127,10 +135,6 @@ public class CategoryActivity extends AppCompatActivity {
             }
 
         });
-
-    }
-    protected void onRestart() {
-        super.onRestart();
 
     }
 
@@ -307,6 +311,12 @@ public class CategoryActivity extends AppCompatActivity {
 
     }
 
+    public  boolean verifyConnection() {
+        ConnectivityManager conectivtyManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return conectivtyManager.getActiveNetworkInfo() != null
+                && conectivtyManager.getActiveNetworkInfo().isAvailable()
+                && conectivtyManager.getActiveNetworkInfo().isConnected();
 
+    }
 
 }

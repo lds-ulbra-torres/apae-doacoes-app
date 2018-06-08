@@ -20,14 +20,16 @@
 
         <activity
             android:name=".views.PartnersActivity"
-            android:parentActivityName=".views.CategoryActivity"/>
+            android:parentActivityName=".views.CategoryActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".views.DetailPartnerActivity"
-            android:parentActivityName=".views.PartnersActivity"/>
+            android:parentActivityName=".views.PartnersActivity"
+            android:screenOrientation="portrait"/>
 
-        <activity android:name=".views.CategoryActivity">
+        <activity android:name=".views.CategoryActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

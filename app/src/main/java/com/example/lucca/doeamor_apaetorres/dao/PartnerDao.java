@@ -29,124 +29,17 @@ public class PartnerDao {
         this.partners = new ArrayList<>();
     }
 
-    public void clearPartnersFromDatabase(){
-        helper.delete("PARTNERS", null,null);
-        helper.execSQL("DELETE FROM PARTNERS");
-    }
+    public void sync(ArrayList<Partner> categories) {
+        for (Partner partner: categories){
 
-    public void getPartnersFromDatabase(final PartnerCallback<ArrayList<Partner>> partnerCallback){
-        Cursor cursor = helper.rawQuery("select * from PARTNERS inner join CATEGORIES on PARTNERS.category_id_category = CATEGORIES._id_category order by discount_partner desc  ;", null);
-        while (cursor.moveToNext()) {
-                partners.add(getPartnerByCursor(cursor));
-        }
-        cursor.close();
-        partnerCallback.onSuccess(partners);
-    }
-
-    private Partner getPartnerByCursor(Cursor cursor){
-        Partner partner = new Partner();
-        partner.setId_partner(cursor.getInt(cursor.getColumnIndex("_id_partner")));
-        partner.setFantasy_name_partner(cursor.getString(cursor.getColumnIndex("fantasy_name_partner")));
-        partner.setCnpj_cpf_partner(cursor.getString(cursor.getColumnIndex("cnpj_cpf_partner")));
-        partner.setRg_inscription_partner(cursor.getString(cursor.getColumnIndex("rg_inscription_partner")));
-        partner.setCep_partner(cursor.getString(cursor.getColumnIndex("cep_partner")));
-        partner.setStreet_partner(cursor.getString(cursor.getColumnIndex("street_partner")));
-        partner.setNumber_partner(cursor.getString(cursor.getColumnIndex("number_partner")));
-        partner.setNeighborhood_partner(cursor.getString(cursor.getColumnIndex("neighborhood_partner")));
-        partner.setCommercial_phone_partner(cursor.getString(cursor.getColumnIndex("commercial_phone_partner")));
-        partner.setDiscount_partner(cursor.getInt(cursor.getColumnIndex("discount_partner")));
-        partner.setId_city(cursor.getString(cursor.getColumnIndex("id_city")));
-        partner.setPhoto_partner(cursor.getString(cursor.getColumnIndex("photo_partner")));
-        partner.setCategory_id_category(cursor.getInt(cursor.getColumnIndex("category_id_category")));
-        return partner;
-    }
-
-    private void savePartners(ArrayList<Partner> partners){
-        ContentValues values;
-
-        for (Partner p: partners) {
-            values = new ContentValues();
-            values.put("fantasy_name_partner", p.getFantasy_name_partner());
-            values.put("cnpj_cpf_partner", p.getCnpj_cpf_partner());
-            values.put("rg_inscription_partner", p.getRg_inscription_partner());
-            values.put("cep_partner",p.getCep_partner());
-            values.put("street_partner",p.getStreet_partner());
-            values.put("number_partner",p.getNumber_partner());
-            values.put("neighborhood_partner",p.getNeighborhood_partner());
-            values.put("commercial_phone_partner",p.getCommercial_phone_partner());
-            values.put("discount_partner",p.getDiscount_partner());
-            values.put("id_city",p.getId_city());
-            values.put("photo_partner",p.getPhoto_partner());
-            values.put("category_id_category",p.getCategory_id_category());
-            helper.insert("PARTNERS", null, values);
-        }
-    }
-
-    private void getPartnersFromJson(String json){
-        partners.clear();
-        Gson gson = new Gson();
-        JSONObject object=null;
-        JSONArray partnersJson=null;
-        JSONArray error = null;
-
-        try {
-            object = new JSONObject(json);
-            partnersJson = object.getJSONArray("partnersByCategory");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        if(partnersJson ==null){
-            Toast.makeText(context,"Ainda não existem parceiros para esta categoria!", Toast.LENGTH_LONG).show();
-
-
-        } else{
-            for (int x=0; x < partnersJson.length(); x++){
-                try {
-                    Partner partner = gson.fromJson(partnersJson.get(x).toString(), Partner.class);
-                    partners.add(partner);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            if ( exists(partner) ){
+                updatePartner(partner);
+            }   else {
+                insertPartner(partner);
             }
 
         }
-
     }
-
-    public  boolean verifyConnection() {
-        ConnectivityManager conectivtyManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        return conectivtyManager.getActiveNetworkInfo() != null
-                && conectivtyManager.getActiveNetworkInfo().isAvailable()
-                && conectivtyManager.getActiveNetworkInfo().isConnected();
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public void insert(ArrayList<Partner> partners) {
-        for (Partner partner: partners){
-            insertPartner(partner);
-        }
-    }
-
     private void updatePartner(Partner partner) {
         ContentValues data = getDataPartners(partner);
         String[] params = {String.valueOf(partner.getId_partner())};
@@ -159,7 +52,6 @@ public class PartnerDao {
         int count = cursor.getCount();
         return count > 0;
     }
-
     private void insertPartner(Partner partner) {
         ContentValues data = getDataPartners(partner);
         helper.insert("PARTNERS", null,data);
@@ -180,7 +72,6 @@ public class PartnerDao {
         data.put("id_city",p.getId_city());
         data.put("photo_partner",p.getPhoto_partner());
         data.put("category_id_category",p.getCategory_id_category());
-        helper.insert("PARTNERS", null, data);
         return data;
     }
 
@@ -194,4 +85,28 @@ public class PartnerDao {
         c.close();
         return partners;
     }
+
+    public void clearPartnersFromDatabase(){
+        helper.delete("PARTNERS", null,null);
+        helper.execSQL("DELETE FROM PARTNERS");
+    }
+
+    private Partner getPartnerByCursor(Cursor cursor){
+        Partner partner = new Partner();
+        partner.setId_partner(cursor.getInt(cursor.getColumnIndex("_id_partner")));
+        partner.setFantasy_name_partner(cursor.getString(cursor.getColumnIndex("fantasy_name_partner")));
+        partner.setCnpj_cpf_partner(cursor.getString(cursor.getColumnIndex("cnpj_cpf_partner")));
+        partner.setRg_inscription_partner(cursor.getString(cursor.getColumnIndex("rg_inscription_partner")));
+        partner.setCep_partner(cursor.getString(cursor.getColumnIndex("cep_partner")));
+        partner.setStreet_partner(cursor.getString(cursor.getColumnIndex("street_partner")));
+        partner.setNumber_partner(cursor.getString(cursor.getColumnIndex("number_partner")));
+        partner.setNeighborhood_partner(cursor.getString(cursor.getColumnIndex("neighborhood_partner")));
+        partner.setCommercial_phone_partner(cursor.getString(cursor.getColumnIndex("commercial_phone_partner")));
+        partner.setDiscount_partner(cursor.getInt(cursor.getColumnIndex("discount_partner")));
+        partner.setId_city(cursor.getString(cursor.getColumnIndex("id_city")));
+        partner.setPhoto_partner(cursor.getString(cursor.getColumnIndex("photo_partner")));
+        partner.setCategory_id_category(cursor.getInt(cursor.getColumnIndex("category_id_category")));
+        return partner;
+    }
+
 }

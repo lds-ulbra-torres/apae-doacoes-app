@@ -52,6 +52,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             @Override
             public void onItemClick(View v, int pos) {
                 Intent intent = new Intent(mContext, PartnersActivity.class);
+                PartnersActivity.name = String.valueOf(mCategories.get(pos).getNameCat());
                 System.out.println(mCategories.get(pos).getId());
                 intent.putExtra("id", String.valueOf(mCategories.get(pos).getId()));
                 intent.putExtra("name",mCategories.get(pos).getNameCat());

@@ -2,8 +2,10 @@ package com.example.lucca.doeamor_apaetorres.views;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -48,6 +50,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PartnersActivity extends AppCompatActivity {
+    public static String idCategory;
+    public static String name;
+
     Toolbar toolbar, searchtollbar;
     Menu search_menu;
     MenuItem item_search;
@@ -56,32 +61,32 @@ public class PartnersActivity extends AppCompatActivity {
     private PartnerDao partnerDao;
     private PartnerAdapter recyclerAdapter;
     private int mToolbarHeight;
+    private String idCat;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_partners);
-        Intent intent = getIntent();
-        String idCat = intent.getStringExtra("id");
-        String name = intent.getStringExtra("name");
         toolbar = findViewById(R.id.toolbar);
         mToolbarHeight = Utils.getToolbarHeight(this);
         mToolbarContainer =  findViewById(R.id.toolbarContainerPartner);
-        setSupportActionBar(toolbar);
-        ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
         setSearchtollbar();
-        retrofitInit(idCat);
-
+        Intent intent = getIntent();
+        toolbar.setNavigationIcon(R.drawable.ic_back);
+        toolbar.setTitle(intent.getStringExtra("name"));
+        toolbar.setSubtitle("Categorias");
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        initRetrofit(intent.getStringExtra("id"));
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-    }
-
-
-    public void retrofitInit(String idCat){
+    public void initRetrofit(String idCat){
         Call <PartnerDTO> call= new RetrofitInit().getPartnerService().getPartners(idCat);
 
         call.enqueue(new Callback<PartnerDTO>() {
@@ -90,10 +95,9 @@ public class PartnersActivity extends AppCompatActivity {
                 PartnerDTO dto = response.body();
                 partnerDao = new PartnerDao(getApplicationContext());
                 searchablePartnerList = dto.getPartners();
-                partnerDao.insert(searchablePartnerList);
+                partnerDao.sync(searchablePartnerList);
                 initRecyclerView();
-                partnerDao.clearPartnersFromDatabase();
-                Log.e("onResponse ",  "deu certo" );
+                Log.e("onResponse ",  "requisição concluída!" );
 
             }
             @Override
@@ -107,15 +111,15 @@ public class PartnersActivity extends AppCompatActivity {
 
     private void initRecyclerView() {
         final RecyclerView recyclerView = findViewById(R.id.recyclerViewPartners);
-
         int paddingTop = Utils.getToolbarHeight(this);
         recyclerView.setHasFixedSize(true);
         recyclerView.setPadding(recyclerView.getPaddingLeft(), paddingTop, recyclerView.getPaddingRight(), recyclerView.getPaddingBottom());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerAdapter = new PartnerAdapter(this,searchablePartnerList);
+        partnerDao = new PartnerDao(getApplicationContext());
+        recyclerAdapter = new PartnerAdapter(this,partnerDao.getPartnersDataBase());
+        partnerDao.clearPartnersFromDatabase();
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.addOnScrollListener(new HidingScrollListener(this) {
-
             @Override
             public void onMoved(int distance) {
                 mToolbarContainer.setTranslationY(-distance);
@@ -165,12 +169,7 @@ public class PartnersActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-    @Override
-    public boolean onSupportNavigateUp(){
 
-        finish();
-        return true;
-    }
     public void setSearchtollbar()
     {
         searchtollbar =  findViewById(R.id.searchFor);
@@ -253,29 +252,15 @@ public class PartnersActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                ArrayList<Partner> searchable = new ArrayList<>();
-                for (Partner p: searchablePartnerList) {
-                    if(p.getFantasy_name_partner().toLowerCase().contains(query.toLowerCase())){
-                        searchable.add(p);
-                    }
-                }
-
-                callSearch(query);
+                recyclerAdapter.getFilter().filter(query);
                 searchView.clearFocus();
+
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                ArrayList<Partner> searchable = new ArrayList<>();
-                for (Partner p: searchablePartnerList) {
-                    if(p.getFantasy_name_partner().toLowerCase().contains(newText.toLowerCase())){
-                        searchable.add(p);
-                    }
-                }
-
-
-
+                recyclerAdapter.getFilter().filter(newText);
                 return false;
             }
 
@@ -333,6 +318,13 @@ public class PartnersActivity extends AppCompatActivity {
 
     }
 
+    public  boolean verifyConnection() {
+        ConnectivityManager conectivtyManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return conectivtyManager.getActiveNetworkInfo() != null
+                && conectivtyManager.getActiveNetworkInfo().isAvailable()
+                && conectivtyManager.getActiveNetworkInfo().isConnected();
+
+    }
 
 
 }

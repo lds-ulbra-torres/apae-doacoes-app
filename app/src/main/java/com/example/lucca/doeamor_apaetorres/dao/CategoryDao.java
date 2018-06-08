@@ -23,28 +23,6 @@ public class CategoryDao {
         this.categories = new ArrayList<>();
     }
 
-        public void clearCategoriesFromDataBase(){
-            helper.delete("CATEGORIES", null,null);
-            helper.execSQL("DELETE FROM CATEGORIES");
-        }
-
-        public void getCategoriesFromDataBase(final CategoryCallBack<ArrayList<Category>> categoryCallBack){
-            String sql = "SELECT * FROM CATEGORIES ORDER BY name_category";
-            Cursor c = helper.rawQuery(sql,null);
-
-            while(c.moveToNext()){
-                Category category = new Category();
-                category.setNameCat(c.getString(c.getColumnIndex("name_category")));
-                category.setDescription_category((c.getString(c.getColumnIndex("description_category"))));
-                category.setPhotoCat(c.getString(c.getColumnIndex("photo_category")));
-                categories.add(category);
-            }
-            c.close();
-            categoryCallBack.onSuccess(categories);
-
-        }
-
-
     public void sync(ArrayList<Category> categories) {
         for (Category category: categories){
 

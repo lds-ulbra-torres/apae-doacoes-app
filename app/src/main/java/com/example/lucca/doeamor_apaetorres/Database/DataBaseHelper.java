@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
     private static String DATABASE_NAME = "APAE_DB";
-    private static int DATABASE_VERSION = 39;
+    private static int DATABASE_VERSION = 40;
 
     public DataBaseHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
