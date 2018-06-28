@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Doe Amor - APAE Torres</string>
+    <string name="app_name">APAE Torres</string>
     <string name="verParceiros">Ver Parceiros</string>
     <string name="lojas">Lojas</string>
     <string name="pesquisarCat">Pesquisar Categorias</string>
@@ -9,5 +9,6 @@
     <string name="action_settings">Sobre</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_partner_test">PartnerTestActivity</string>
+    <string name="title_activity_basic">BasicActivity</string>
 
 </resources>
