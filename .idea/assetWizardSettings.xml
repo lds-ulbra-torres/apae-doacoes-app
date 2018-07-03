@@ -61,7 +61,8 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="scalingPercent" value="61" />
+                                                <entry key="scalingPercent" value="114" />
+                                                <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -73,8 +74,8 @@
                                     <map>
                                       <entry key="backgroundColor" value="39ffee" />
                                       <entry key="backgroundLayerName" value="ic_app_launcher" />
-                                      <entry key="foregroundImage" value="C:\Users\lucca\Downloads\doe-amor-icon.png" />
-                                      <entry key="foregroundLayerName" value="ic_doeamor" />
+                                      <entry key="foregroundImage" value="C:\Users\lucca\Downloads\icones\doe-amor-icon.png" />
+                                      <entry key="foregroundLayerName" value="icon_launcher" />
                                       <entry key="outputName" value="icon_doeamor_app" />
                                       <entry key="showGrid" value="true" />
                                     </map>
@@ -104,9 +105,8 @@
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
                                       <entry key="cropped" value="true" />
-                                      <entry key="iconShape" value="NONE" />
-                                      <entry key="imageAsset" value="C:\Users\lucca\Downloads\doe-amor-icon.png" />
-                                      <entry key="outputName" value="icone_apae_torres" />
+                                      <entry key="imageAsset" value="C:\Users\lucca\Downloads\icones\doe-amor-icon.png" />
+                                      <entry key="outputName" value="teste" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -177,7 +177,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputIconType" value="NOTIFICATION" />
+                            <entry key="outputIconType" value="LAUNCHER_LEGACY" />
                           </map>
                         </option>
                       </PersistentState>

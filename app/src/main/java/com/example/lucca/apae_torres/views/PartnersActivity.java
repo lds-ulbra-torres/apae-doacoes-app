@@ -62,25 +62,13 @@ public class PartnersActivity extends AppCompatActivity {
     private PartnerAdapter recyclerAdapter;
     private int mToolbarHeight;
     private String idCat;
+    private SwipeRefreshLayout swipe;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_partners);
-        final SwipeRefreshLayout swipe = findViewById(R.id.swipe_partners);
-
-        if (!verifyConnection()){
-            Toast.makeText(PartnersActivity.this, "APAE-01 - Verifique sua internet.", Toast.LENGTH_LONG).show();
-            swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    initRetrofit(idCat);
-                    swipe.setRefreshing(false);
-                }
-            });
-            swipe.setRefreshing(false);
-        }
         toolbar = findViewById(R.id.toolbar);
         mToolbarHeight = Utils.getToolbarHeight(this);
         mToolbarContainer = findViewById(R.id.toolbarContainerPartner);
@@ -91,7 +79,31 @@ public class PartnersActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(intent.getStringExtra("name"));
         getSupportActionBar().setSubtitle("Categorias");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        initRetrofit(idCat);
+        swipe = findViewById(R.id.swipe_partners);
+        if(verifyConnection()){
+            initRetrofit(idCat);
+            initRecyclerView();
+        } else {
+            Toast.makeText(this, "Por favor, verifique sua internet.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Deslize para baixo para atualizar.", Toast.LENGTH_LONG).show();
+
+
+        }
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (verifyConnection()){
+                    initRetrofit(idCat);
+                    initRecyclerView();
+                }
+                if (!verifyConnection()) {
+                    Toast.makeText(PartnersActivity.this, "Por favor, verifique sua internet.", Toast.LENGTH_SHORT).show();
+
+                    swipe.setRefreshing(false);
+                }
+            }
+        });
+
     }
 
     public void initRetrofit(final String idCat) {
@@ -107,6 +119,8 @@ public class PartnersActivity extends AppCompatActivity {
                 searchablePartnerList.clear();
                 initRecyclerView();
                 Log.e("onResponse ", "requisição concluída!");
+                swipe.setRefreshing(false);
+
 
             }
 
@@ -114,7 +128,7 @@ public class PartnersActivity extends AppCompatActivity {
             public void onFailure(Call<PartnerDTO> call, Throwable t) {
                 Log.e("onFailure: ", t.getMessage());
                 Toast.makeText(PartnersActivity.this, "APAE-02 - Erro ao buscar parceiros.", Toast.LENGTH_SHORT).show();
-
+                swipe.setRefreshing(false);
             }
         });
     }

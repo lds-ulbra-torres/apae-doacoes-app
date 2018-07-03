@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -43,10 +44,12 @@ public class FirebaseMessaging extends FirebaseMessagingService {
                 PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.icon_doeamor_app)
+                .setSmallIcon(R.drawable.web_hi_res_512)
                 .setContentTitle(notification.getTitle())
                 .setContentText(notification.getBody())
+                .setLargeIcon(BitmapFactory.decodeResource( getResources(), R.drawable.web_hi_res_512))
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent)
              .setSound(defaultSoundUri);

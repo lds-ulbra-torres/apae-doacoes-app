@@ -71,10 +71,35 @@ public class CategoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_category);
         initToolbar();
         swipe =  findViewById(R.id.swipe_category);
-        if (verifyConnection()) {
+        if(verifyConnection()){
             initRetrofit();
             initRecyclerView();
             FirebaseMessaging.getInstance().subscribeToTopic("global_android");
+        } else {
+            Toast.makeText(CategoryActivity.this, "Por favor, verifique sua internet.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Deslize para baixo para atualizar.", Toast.LENGTH_LONG).show();
+
+
+        }
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (verifyConnection()){
+                    initRetrofit();
+                    initRecyclerView();
+                    FirebaseMessaging.getInstance().subscribeToTopic("global_android");
+                }
+                if (!verifyConnection()) {
+                    Toast.makeText(CategoryActivity.this, "Por favor, verifique sua internet.", Toast.LENGTH_SHORT).show();
+                    swipe.setRefreshing(false);
+                }
+            }
+        });
+
+
+
+       /* if (verifyConnection()) {
+
             swipe.setRefreshing(false);
             swipe.cancelPendingInputEvents();
         }   else {
@@ -98,11 +123,11 @@ public class CategoryActivity extends AppCompatActivity {
             swipe.setRefreshing(false);
         }
         swipe.setRefreshing(false);
+        */
     }
 
     @Override
     protected void onResume() {
-        swipe.setRefreshing(false);
         super.onResume();
     }
 
@@ -128,11 +153,14 @@ public class CategoryActivity extends AppCompatActivity {
                 searchableCategoryList.clear();
                 initRecyclerView();
                 Log.e("onResponse ",  "Requisição finalizada com sucesso!" );
+                swipe.setRefreshing(false);
 
             }
             @Override
             public void onFailure(Call<CategoryDTO> call, Throwable t) {
+                Toast.makeText(CategoryActivity.this, "Desculpe, estamos com problemas no serviço, tente novamente mais tarde.", Toast.LENGTH_LONG).show();
                 Log.e("onFailure: ",t.getMessage() );
+                swipe.setRefreshing(false);
             }
         });
     }
@@ -147,7 +175,7 @@ public class CategoryActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(this,2));
         categoryDao = new CategoryDao(getApplicationContext());
         recyclerAdapter = new CategoryAdapter(this,categoryDao.getCategoriesDataBase());
-
+        categoryDao.clearCategoriesFromDataBase();
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.addOnScrollListener(new HidingScrollListener(this) {
 

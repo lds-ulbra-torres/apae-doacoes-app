@@ -61,6 +61,10 @@ public class CategoryDao {
         return data;
     }
 
+    public void clearCategoriesFromDataBase(){
+        helper.delete("CATEGORIES", null,null);
+        helper.execSQL("DELETE FROM CATEGORIES");
+    }
     public ArrayList<Category> getCategoriesDataBase(){
         String sql = "SELECT * FROM CATEGORIES ORDER BY name_category";
         Cursor c = helper.rawQuery(sql,null);
