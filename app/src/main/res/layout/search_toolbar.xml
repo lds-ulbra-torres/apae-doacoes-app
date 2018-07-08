@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.Toolbar android:id="@+id/searchFor"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     app:collapseIcon="@drawable/ic_arrow_left"
     app:titleTextColor="@color/colorPrimary"
-    android:layout_alignParentTop="true"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    android:background="@drawable/layout_shadow_white"/>
+    android:background="@drawable/layout_shadow_white"
+    xmlns:android="http://schemas.android.com/apk/res/android" />

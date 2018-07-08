@@ -10,5 +10,8 @@
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_partner_test">PartnerTestActivity</string>
     <string name="title_activity_basic">BasicActivity</string>
+    <string name="discountCard">Cartão débito:</string>
+    <string name="discountDeadline">À prazo:</string>
+    <string name="discountPartner">À vista:</string>
 
 </resources>

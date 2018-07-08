@@ -5,179 +5,22 @@
       <map>
         <entry key="imageWizard">
           <value>
+            <PersistentState />
+          </value>
+        </entry>
+        <entry key="vectorWizard">
+          <value>
             <PersistentState>
               <option name="children">
                 <map>
-                  <entry key="imageAssetPanel">
+                  <entry key="vectorAssetStep">
                     <value>
                       <PersistentState>
-                        <option name="children">
-                          <map>
-                            <entry key="actionbar">
-                              <value>
-                                <PersistentState>
-                                  <option name="children">
-                                    <map>
-                                      <entry key="clipartAsset">
-                                        <value>
-                                          <PersistentState>
-                                            <option name="values">
-                                              <map>
-                                                <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/communication/ic_call_black_24dp.xml" />
-                                              </map>
-                                            </option>
-                                          </PersistentState>
-                                        </value>
-                                      </entry>
-                                    </map>
-                                  </option>
-                                  <option name="values">
-                                    <map>
-                                      <entry key="outputName" value="ic_action_call" />
-                                    </map>
-                                  </option>
-                                </PersistentState>
-                              </value>
-                            </entry>
-                            <entry key="launcher">
-                              <value>
-                                <PersistentState>
-                                  <option name="children">
-                                    <map>
-                                      <entry key="backgroundImage">
-                                        <value>
-                                          <PersistentState>
-                                            <option name="values">
-                                              <map>
-                                                <entry key="scalingPercent" value="101" />
-                                                <entry key="trimmed" value="true" />
-                                              </map>
-                                            </option>
-                                          </PersistentState>
-                                        </value>
-                                      </entry>
-                                      <entry key="foregroundImage">
-                                        <value>
-                                          <PersistentState>
-                                            <option name="values">
-                                              <map>
-                                                <entry key="scalingPercent" value="114" />
-                                                <entry key="trimmed" value="true" />
-                                              </map>
-                                            </option>
-                                          </PersistentState>
-                                        </value>
-                                      </entry>
-                                    </map>
-                                  </option>
-                                  <option name="values">
-                                    <map>
-                                      <entry key="backgroundColor" value="39ffee" />
-                                      <entry key="backgroundLayerName" value="ic_app_launcher" />
-                                      <entry key="foregroundImage" value="C:\Users\lucca\Downloads\icones\doe-amor-icon.png" />
-                                      <entry key="foregroundLayerName" value="icon_launcher" />
-                                      <entry key="outputName" value="icon_doeamor_app" />
-                                      <entry key="showGrid" value="true" />
-                                    </map>
-                                  </option>
-                                </PersistentState>
-                              </value>
-                            </entry>
-                            <entry key="launcherLegacy">
-                              <value>
-                                <PersistentState>
-                                  <option name="children">
-                                    <map>
-                                      <entry key="image">
-                                        <value>
-                                          <PersistentState>
-                                            <option name="values">
-                                              <map>
-                                                <entry key="trimmed" value="true" />
-                                              </map>
-                                            </option>
-                                          </PersistentState>
-                                        </value>
-                                      </entry>
-                                    </map>
-                                  </option>
-                                  <option name="values">
-                                    <map>
-                                      <entry key="assetType" value="IMAGE" />
-                                      <entry key="cropped" value="true" />
-                                      <entry key="imageAsset" value="C:\Users\lucca\Downloads\icones\doe-amor-icon.png" />
-                                      <entry key="outputName" value="teste" />
-                                    </map>
-                                  </option>
-                                </PersistentState>
-                              </value>
-                            </entry>
-                            <entry key="notification">
-                              <value>
-                                <PersistentState>
-                                  <option name="children">
-                                    <map>
-                                      <entry key="clipArt">
-                                        <value>
-                                          <PersistentState>
-                                            <option name="values">
-                                              <map>
-                                                <entry key="trimmed" value="true" />
-                                              </map>
-                                            </option>
-                                          </PersistentState>
-                                        </value>
-                                      </entry>
-                                      <entry key="clipartAsset">
-                                        <value>
-                                          <PersistentState>
-                                            <option name="values">
-                                              <map>
-                                                <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/social/ic_whatshot_black_24dp.xml" />
-                                              </map>
-                                            </option>
-                                          </PersistentState>
-                                        </value>
-                                      </entry>
-                                      <entry key="image">
-                                        <value>
-                                          <PersistentState>
-                                            <option name="values">
-                                              <map>
-                                                <entry key="paddingPercent" value="5" />
-                                                <entry key="trimmed" value="true" />
-                                              </map>
-                                            </option>
-                                          </PersistentState>
-                                        </value>
-                                      </entry>
-                                      <entry key="text">
-                                        <value>
-                                          <PersistentState>
-                                            <option name="values">
-                                              <map>
-                                                <entry key="trimmed" value="true" />
-                                              </map>
-                                            </option>
-                                          </PersistentState>
-                                        </value>
-                                      </entry>
-                                    </map>
-                                  </option>
-                                  <option name="values">
-                                    <map>
-                                      <entry key="imageAsset" value="C:\Users\lucca\Downloads\doe-amor-icon.png" />
-                                      <entry key="outputName" value="ic_notification_teste" />
-                                    </map>
-                                  </option>
-                                </PersistentState>
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
                         <option name="values">
                           <map>
-                            <entry key="outputIconType" value="LAUNCHER_LEGACY" />
+                            <entry key="assetSourceType" value="FILE" />
+                            <entry key="outputName" value="ic_calendar" />
+                            <entry key="sourceFile" value="C:\Users\lucca\Desktop\calendar.svg" />
                           </map>
                         </option>
                       </PersistentState>

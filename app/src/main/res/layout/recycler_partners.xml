@@ -29,13 +29,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_weight="2">
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_gravity="center"
                 android:id="@+id/partnerTittle"
-                android:layout_width="202dp"
+                android:layout_weight="5"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:paddingBottom="11dp"
@@ -44,22 +44,43 @@
                 android:textColor="#212121"
                 android:textSize="16sp"
                 android:textStyle="bold" />
-            <ImageView
-                android:paddingRight="7dp"
-                android:paddingLeft="55dp"
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_discount"/>
 
-            <TextView
-                android:textSize="15sp"
-                android:id="@+id/partnerDiscount"
-                android:layout_width="46dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:paddingRight="9dp"
-                android:textColor="#62B964" />
+            <LinearLayout
+                android:background="@color/colorAccent"
+                android:layout_weight="4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
+                <TextView
+                    android:paddingLeft="12dp"
+                    android:id="@+id/partnerDiscount"
+                    android:layout_width="0dp"
+                    android:textStyle="bold"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="3"
+                    android:textColor="@color/white"
+                    android:textSize="22sp"/>
+                <ImageView
+
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_black_shop_tag"/>
+
+                <TextView
+                    android:padding="4dp"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_weight="3"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="À vista"/>
+            </LinearLayout>
+
+
         </LinearLayout>
 
     </LinearLayout>
