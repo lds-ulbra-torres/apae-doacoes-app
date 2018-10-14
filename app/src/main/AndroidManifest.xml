@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.apae.lucca.apae_torres">
+    package="appapae.apae.app.apae">
 
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
@@ -16,13 +14,13 @@
         android:theme="@style/AppTheme">
 
         <service
-            android:name=".Firebase.FirebaseMessaging">
+            android:name="appapae.apae.app.apae.Firebase.FirebaseMessaging">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
         <service
-            android:name=".Firebase.FirebaseInstance">
+            android:name="appapae.apae.app.apae.Firebase.FirebaseInstance">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
@@ -41,20 +39,20 @@
             android:value="AIzaSyCIiCQ3WP6JKmXyhIr4QZkKPDF00FuxWZ0" />
 
         <activity
-            android:name=".views.PartnersActivity"
-            android:parentActivityName=".views.CategoryActivity"
+            android:name="appapae.apae.app.apae.views.PartnersActivity"
+            android:parentActivityName="appapae.apae.app.apae.views.CategoryActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".views.CategoryActivity"
+            android:name="appapae.apae.app.apae.views.CategoryActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".views.Detail"
+        <activity android:name="appapae.apae.app.apae.views.Detail"
             android:screenOrientation="portrait"
-            android:parentActivityName=".views.PartnersActivity">
+            android:parentActivityName="appapae.apae.app.apae.views.PartnersActivity">
         </activity>
     </application>
 
