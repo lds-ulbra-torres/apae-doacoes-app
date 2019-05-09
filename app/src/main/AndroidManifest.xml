@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="appapae.apae.app.apae">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
+    <application
+       android:icon="@drawable/web_hi_res_512"
+        android:allowBackup="true"
+        android:label="APAE Torres"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <service
+            android:name="appapae.apae.app.apae.Firebase.FirebaseMessaging">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name="appapae.apae.app.apae.Firebase.FirebaseInstance">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/web_hi_res_512"
+            />
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCIiCQ3WP6JKmXyhIr4QZkKPDF00FuxWZ0" />
+
+        <activity
+            android:name="appapae.apae.app.apae.views.PartnersActivity"
+            android:parentActivityName="appapae.apae.app.apae.views.CategoryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="appapae.apae.app.apae.views.CategoryActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name="appapae.apae.app.apae.views.Detail"
+            android:screenOrientation="portrait"
+            android:parentActivityName="appapae.apae.app.apae.views.PartnersActivity">
+        </activity>
+    </application>
+
+</manifest>

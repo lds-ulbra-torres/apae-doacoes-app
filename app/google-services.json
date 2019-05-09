@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "1057639629014",
+    "firebase_url": "https://apae-doacoes.firebaseio.com",
+    "project_id": "apae-doacoes",
+    "storage_bucket": "apae-doacoes.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1057639629014:android:6ce6e16c498b1883",
+        "android_client_info": {
+          "package_name": "appapae.apae.app.apae"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1057639629014-cb91hhe8924i280ttp1r1jna45vo7fts.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "appapae.apae.app.apae",
+            "certificate_hash": "a0abf44b095ea7281dd9b57acaef8a476f0807cc"
+          }
+        },
+        {
+          "client_id": "1057639629014-6c9ndnu39he2dv59li5bjslnl33b8v80.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDiHPxZpOfQ0f6KiRdgZzjrnbsQR0zvCs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1057639629014-6c9ndnu39he2dv59li5bjslnl33b8v80.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1057639629014-m8uehsjvt8mc3i0b3b12njosfjhvur01.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.apae-doacoes"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

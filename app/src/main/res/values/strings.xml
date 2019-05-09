@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">APAE Torres</string>
+    <string name="verParceiros">Ver Parceiros</string>
+    <string name="lojas">Lojas</string>
+    <string name="pesquisarCat">Pesquisar Categorias</string>
+    <string name="cat">Categorias</string>
+    <string name="action_search">Pesquisar</string>
+    <string name="action_status">Status</string>
+    <string name="action_settings">Sobre</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_partner_test">PartnerTestActivity</string>
+    <string name="title_activity_basic">BasicActivity</string>
+    <string name="discountCard">Cartão débito:</string>
+    <string name="discountDeadline">À prazo:</string>
+    <string name="discountPartner">À vista:</string>
+
+</resources>
